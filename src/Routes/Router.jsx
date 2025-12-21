@@ -7,6 +7,7 @@ import DashboardLayout from "../DashboardLayout/DashboardLayout";
 import MainDashboard from "../Pages/Dashboard/MainDashboard";
 import AddRequest from "../Pages/Dashboard/AddRequest/AddRequest";
 import SearchDonor from "../Components/Home/SearchDonors";
+import MyDonationRequest from "../Pages/DashboardPages/MyDonationRequest";
 
 
 
@@ -23,6 +24,10 @@ export const router = createBrowserRouter([
       {
         path: '/search',
         element: <SearchDonor/>
+      },
+      {
+        path: '/donation-request',
+        element: <MyDonationRequest/>
       },
       { path: '/register', 
         element:<Register/>
