@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import useAuth from "../../../hooks/useAuth";
 import { Link, useLocation, useNavigate } from "react-router";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const {
@@ -42,6 +43,11 @@ const Register = () => {
   const handleRegistration = async (data) => {
     console.log(data);
     try {
+       const name = data.name
+      const bloodGroup = data.bloodGroup
+      const district = data.district
+      const upazila = data.upazila
+
       const profileImg = data.photo[0];
 
       // 1. Firebase email/password registration
@@ -59,22 +65,21 @@ const Register = () => {
       const imgRes = await axios.post(image_API_URL, formData);
       console.log(imgRes.data)
 
+      
+      const photoURL = imgRes.data.data.display_url
+      
       // 3. Prepare user profile info for Firebase
       const userProfile = {
         displayName: data.name,
-        // photoURL: imgRes.data.data.url,
-        photoURL
+        photoURL: photoURL,
+     
       };
 
       // 4. Update Firebase profile
       await updateUserProfile(userProfile);
 
       // (Optional) Send full user info to backend later (role=donor)
-      const name = data.name
-      const bloodGroup = data.bloodGroup
-      const district = data.district
-      const upazila = data.upazila
-      const photoURL = imgRes.data.data.display_url
+     
       console.log(photoURL)
       const userInfo = {
         name, bloodGroup, district, upazila, photoURL, role: 'donor', status: 'active'
@@ -83,11 +88,12 @@ const Register = () => {
       
 
       navigate(location.state || "/");
+      toast.success('Donor Registration successfull')
     } catch (error) {
       console.log(error);
     }
   };
-  
+
   
   return (
     <div className="card bg-base-100 w-full mx-auto max-w-sm shadow-2xl mt-5">

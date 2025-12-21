@@ -5,7 +5,7 @@ import Register from "../Components/Auth/Register/Register";
 import Login from "../Components/Auth/Login/Login";
 import DashboardLayout from "../DashboardLayout/DashboardLayout";
 import MainDashboard from "../Pages/Dashboard/MainDashboard";
-import AddProduct from "../Pages/Dashboard/AddProduct/AddProduct";
+import AddRequest from "../Pages/Dashboard/AddRequest/AddRequest";
 
 
 
@@ -36,7 +36,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'add-request',
-        element: <AddProduct/>
+        element: <AddRequest/>
       }
     ]
 
