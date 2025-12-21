@@ -11,6 +11,7 @@ import {
 } from 'firebase/auth'
 import { app } from '../firebase/firebase.config'
 import { AuthContext } from './AuthContext'
+import axios from 'axios'
 // import axios from 'axios'
 
 const auth = getAuth(app)
@@ -19,7 +20,7 @@ const googleProvider = new GoogleAuthProvider()
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  // const [role, setRole] = useState('');
+  const [role, setRole] = useState('');
 
   const registerUser = (email, password) => {
     setLoading(true)
@@ -61,6 +62,36 @@ const AuthProvider = ({ children }) => {
     }
   }, [])
 
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, async currentUser=> {
+  //     console.log('CurrentUser-->', currentUser?.email)
+  //     setUser(currentUser);
+
+  //     if (currentUser) {
+     
+  //       fetchUserRole(currentUser.email);
+  //     } else {
+        
+  //       setRole("donor");
+  //       setLoading(false);
+  //     }
+  //   });
+
+  //   return () => unsubscribe();
+  // }, []);
+
+//  const fetchUserRole = async (email) => {
+//   try {
+//     const res = await axios.get(`http://localhost:3000/user/${email}`);
+//     setRole(res.data.role);
+//     // setStatus(res.data.status);
+//     setLoading(false);
+//   } catch (err) {
+//     console.log("Role fetch error:", err);
+//     setLoading(false);
+//   }
+// };
+
   // Role set
   // useEffect(()=>{
   //   if(!user) return;
@@ -69,7 +100,9 @@ const AuthProvider = ({ children }) => {
   //     setRole(res.data.role)
   //   })
   // }, [user])
-  // console.log(role)
+  console.log(role)
+
+  
 
   const authInfo = {
     user,
@@ -80,9 +113,10 @@ const AuthProvider = ({ children }) => {
     signIn,
     signInWithGoogle,
     logOut,
-    // role,
+    role,
     updateUserProfile,
   }
+
 
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>

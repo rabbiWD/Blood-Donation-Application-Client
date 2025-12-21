@@ -6,6 +6,8 @@ import Login from "../Components/Auth/Login/Login";
 import DashboardLayout from "../DashboardLayout/DashboardLayout";
 import MainDashboard from "../Pages/Dashboard/MainDashboard";
 import AddRequest from "../Pages/Dashboard/AddRequest/AddRequest";
+import SearchDonor from "../Components/Home/SearchDonors";
+
 
 
 
@@ -17,6 +19,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Home/>
+      },
+      {
+        path: '/search',
+        element: <SearchDonor/>
       },
       { path: '/register', 
         element:<Register/>
@@ -37,7 +43,8 @@ export const router = createBrowserRouter([
       {
         path: 'add-request',
         element: <AddRequest/>
-      }
+      },
+      
     ]
 
   }

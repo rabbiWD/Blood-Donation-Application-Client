@@ -1,6 +1,6 @@
 import { FaHeartbeat, FaUsers, FaClock } from 'react-icons/fa';
 
-const FeaturedSection = () => {
+const Features = () => {
     const features = [
         {
             id: 1,
@@ -24,7 +24,7 @@ const FeaturedSection = () => {
 
     return (
         <section className="py-16 bg-white">
-            <div className="container mx-auto px-6">
+            <div className="max-w-7xl mx-auto px-6">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-800">
                         Why Choose Our Platform?
@@ -55,4 +55,4 @@ const FeaturedSection = () => {
     );
 };
 
-export default FeaturedSection;
+export default Features;
