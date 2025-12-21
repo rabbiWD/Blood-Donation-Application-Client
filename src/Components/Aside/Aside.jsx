@@ -1,3 +1,4 @@
+import { Cog6ToothIcon, HomeIcon, UserCircleIcon } from '@heroicons/react/16/solid';
 import React from 'react';
 import { NavLink } from 'react-router';
 
