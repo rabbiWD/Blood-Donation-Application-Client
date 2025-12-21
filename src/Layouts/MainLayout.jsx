@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "../Components/Shared/Navbar/Navbar";
 import { Outlet } from "react-router";
+import Footer from "../Components/Shared/Footer/Footer";
 
 const MainLayout = () => {
   return (
@@ -9,6 +10,7 @@ const MainLayout = () => {
       <div className="pt-24 min-h-[calc(100vh-68px)]">
         <Outlet />
       </div>
+      <Footer/>
     </div>
   );
 };

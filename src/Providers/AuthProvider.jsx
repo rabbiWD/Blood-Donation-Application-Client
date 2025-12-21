@@ -11,6 +11,7 @@ import {
 } from 'firebase/auth'
 import { app } from '../firebase/firebase.config'
 import { AuthContext } from './AuthContext'
+// import axios from 'axios'
 
 const auth = getAuth(app)
 const googleProvider = new GoogleAuthProvider()
@@ -18,8 +19,9 @@ const googleProvider = new GoogleAuthProvider()
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  // const [role, setRole] = useState('');
 
-  const createUser = (email, password) => {
+  const registerUser = (email, password) => {
     setLoading(true)
     return createUserWithEmailAndPassword(auth, email, password)
   }
@@ -39,10 +41,11 @@ const AuthProvider = ({ children }) => {
     return signOut(auth)
   }
 
-  const updateUserProfile = (name, photo) => {
+  const updateUserProfile = (user) => {
+    console.log(user)
     return updateProfile(auth.currentUser, {
-      displayName: name,
-      photoURL: photo,
+      displayName: user.displayName,
+      photoURL: user.photoURL,
     })
   }
 
@@ -58,15 +61,26 @@ const AuthProvider = ({ children }) => {
     }
   }, [])
 
+  // Role set
+  // useEffect(()=>{
+  //   if(!user) return;
+  //   axios.get(`http://localhost:3000/user/role/${user.email}`)
+  //   .then(res =>{
+  //     setRole(res.data.role)
+  //   })
+  // }, [user])
+  // console.log(role)
+
   const authInfo = {
     user,
     setUser,
     loading,
     setLoading,
-    createUser,
+    registerUser,
     signIn,
     signInWithGoogle,
     logOut,
+    // role,
     updateUserProfile,
   }
 
