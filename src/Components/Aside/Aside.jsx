@@ -21,6 +21,15 @@ const Aside = () => {
                     Dashboard
                 </NavLink>
 
+                 <NavLink to='/dashboard/add-request' className={({isActive})=>
+                `flex items-center gap-3 p-3 rounded-lg transition ${
+                    isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'
+                }`
+                }>
+                    <HomeIcon className= 'h-5 w-5' />
+                    Add Request
+                </NavLink>
+
                 <NavLink to='/dashboard/users' className={({isActive})=>
                 `flex items-center gap-3 p-3 rounded-lg transition ${
                     isActive ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'

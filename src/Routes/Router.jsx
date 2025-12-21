@@ -5,6 +5,7 @@ import Register from "../Components/Auth/Register/Register";
 import Login from "../Components/Auth/Login/Login";
 import DashboardLayout from "../DashboardLayout/DashboardLayout";
 import MainDashboard from "../Pages/Dashboard/MainDashboard";
+import AddProduct from "../Pages/Dashboard/AddProduct/AddProduct";
 
 
 
@@ -26,12 +27,16 @@ export const router = createBrowserRouter([
     ]
   },
   {
-    path:'/dashboard',
+    path:'dashboard',
     element: <DashboardLayout/>,
     children: [
       {
         path:'main',
         element: <MainDashboard/>
+      },
+      {
+        path: 'add-request',
+        element: <AddProduct/>
       }
     ]
 
