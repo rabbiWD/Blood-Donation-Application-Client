@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from "react-router";
 // import { Link } from "react-router-dom";
 
-const MyDonationRequest = () => {
+const DonationRequest = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -88,4 +88,4 @@ const MyDonationRequest = () => {
   );
 };
 
-export default MyDonationRequest;
+export default DonationRequest;
