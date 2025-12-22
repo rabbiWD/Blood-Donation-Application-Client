@@ -81,7 +81,7 @@ const AllBloodDonationRequest = () => {
       return;
 
     try {
-      await axios.delete(`${API_BASE}/donation-requests/${id}`);
+      await axios.delete(`${API_BASE}/donation-request/${id}`);
       toast.success("Request deleted successfully");
       fetchRequests(pagination.currentPage);
     } catch (err) {
@@ -100,7 +100,7 @@ const AllBloodDonationRequest = () => {
   return (
     <>
       <Helmet>
-        <title>BloodCare | All Blood Donation Requests</title>
+        <title>BloodDonation | All Blood Donation Requests</title>
       </Helmet>
 
       {/* Light Theme Background */}

@@ -18,6 +18,7 @@ import { createBrowserRouter } from "react-router";
 import AllBloodDonationRequest from "../Pages/Dashboard/AllBloodDonationRequest/AllBloodDonationRequest";
 import AllUsers from "../Pages/Dashboard/AllUsers/AllUsers";
 import Funding from "../Pages/Fundings/Fundings";
+import RequestDetails from "../Pages/DashboardPages/RequestDetails";
 
 export const router = createBrowserRouter([
   {
@@ -85,6 +86,10 @@ export const router = createBrowserRouter([
       {
         path: "edit-request/:id", // /dashboard/edit-request/:id
         element: <EditDonationRequest />
+      },
+      {
+        path: "/dashboard/request-details/:id",
+        element: <RequestDetails/>
       },
       {
         path: "profile", // /dashboard/profile
