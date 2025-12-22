@@ -26,7 +26,7 @@ const DonationRequestDetails = () => {
     if (user) {
       const fetchRequest = async () => {
         try {
-          const res = await axios.get(`http://localhost:3000/donation-requests/${id}`);
+          const res = await axios.get(`http://localhost:3000/donation-request/${id}`);
           setRequest(res.data);
         } catch (error) {
           console.error("Error fetching request:", error);

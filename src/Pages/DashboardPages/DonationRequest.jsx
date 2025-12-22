@@ -10,7 +10,7 @@ const DonationRequest = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/donation-requests/pending");
+        const res = await axios.get("http://localhost:3000/donation-request/pending");
         setRequests(res.data);
       } catch (error) {
         console.error("Error fetching requests:", error);
