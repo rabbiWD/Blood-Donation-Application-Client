@@ -10,7 +10,9 @@ const DonationRequest = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/donation-request/pending");
+        const res = await axios.get(
+          "https://blood-donation-application-server-phi.vercel.app/donation-request/pending"
+        );
         setRequests(res.data);
       } catch (error) {
         console.error("Error fetching requests:", error);

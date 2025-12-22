@@ -20,13 +20,12 @@ const Profile = () => {
 
   // Load districts & upazilas
   useEffect(() => {
-    Promise.all([
-      axios.get("/district.json"),
-      axios.get("/upazila.json")
-    ]).then(([distRes, upaRes]) => {
-      setDistricts(distRes.data.districts || []);
-      setUpazilas(upaRes.data.upazilas || []);
-    }).catch(err => console.error("Failed to load locations:", err));
+    Promise.all([axios.get("/district.json"), axios.get("/upazila.json")])
+      .then(([distRes, upaRes]) => {
+        setDistricts(distRes.data.districts || []);
+        setUpazilas(upaRes.data.upazilas || []);
+      })
+      .catch((err) => console.error("Failed to load locations:", err));
   }, []);
 
   // Fetch user profile
@@ -34,7 +33,9 @@ const Profile = () => {
     if (authUser?.email) {
       const fetchProfile = async () => {
         try {
-          const res = await axios.get(`http://localhost:3000/users/${authUser.email}`);
+          const res = await axios.get(
+            `https://blood-donation-application-server-phi.vercel.app/users/${authUser.email}`
+          );
           setProfile(res.data);
           setFormData(res.data);
         } catch (error) {
@@ -54,14 +55,19 @@ const Profile = () => {
   // Filter upazilas when district changes
   useEffect(() => {
     if (formData.district && districts.length > 0) {
-      const selectedDist = districts.find(d => d.name === formData.district);
+      const selectedDist = districts.find((d) => d.name === formData.district);
       if (selectedDist) {
-        const filtered = upazilas.filter(u => u.district_id === selectedDist.id);
+        const filtered = upazilas.filter(
+          (u) => u.district_id === selectedDist.id
+        );
         setFilteredUpazilas(filtered);
 
         // Reset upazila if not valid for new district
-        if (formData.upazila && !filtered.some(u => u.name === formData.upazila)) {
-          setFormData(prev => ({ ...prev, upazila: "" }));
+        if (
+          formData.upazila &&
+          !filtered.some((u) => u.name === formData.upazila)
+        ) {
+          setFormData((prev) => ({ ...prev, upazila: "" }));
         }
       }
     } else {
@@ -78,7 +84,7 @@ const Profile = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   // শুধু এডিটেবল ফিল্ড পাঠানো হবে
@@ -94,10 +100,13 @@ const Profile = () => {
         upazila: formData.upazila,
       };
 
-      await axios.patch(`http://localhost:3000/users/${authUser.email}`, dataToUpdate);
+      await axios.patch(
+        `https://blood-donation-application-server-phi.vercel.app/users/${authUser.email}`,
+        dataToUpdate
+      );
 
       // Update local state
-      setProfile(prev => ({ ...prev, ...dataToUpdate }));
+      setProfile((prev) => ({ ...prev, ...dataToUpdate }));
       setIsEditing(false);
 
       alert("Profile updated successfully!");
@@ -134,7 +143,6 @@ const Profile = () => {
 
       <div className="card bg-base-100 shadow-2xl">
         <div className="card-body p-10">
-
           {/* Avatar */}
           <div className="flex justify-center mb-10">
             {profile.photoURL ? (
@@ -169,7 +177,8 @@ const Profile = () => {
                 >
                   {saving ? (
                     <>
-                      <span className="loading loading-spinner"></span> Saving...
+                      <span className="loading loading-spinner"></span>{" "}
+                      Saving...
                     </>
                   ) : (
                     "Save Changes"
@@ -194,7 +203,9 @@ const Profile = () => {
                 onChange={handleChange}
                 readOnly={!isEditing}
                 placeholder="Enter your name"
-                className={`input input-bordered w-full ${!isEditing ? "bg-gray-100" : ""}`}
+                className={`input input-bordered w-full ${
+                  !isEditing ? "bg-gray-100" : ""
+                }`}
               />
             </div>
 
@@ -217,12 +228,18 @@ const Profile = () => {
                 value={formData.bloodGroup || ""}
                 onChange={handleChange}
                 disabled={!isEditing}
-                className={`select select-bordered w-full ${!isEditing ? "bg-gray-100" : ""}`}
+                className={`select select-bordered w-full ${
+                  !isEditing ? "bg-gray-100" : ""
+                }`}
               >
                 <option value="">Select Blood Group</option>
-                {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(bg => (
-                  <option key={bg} value={bg}>{bg}</option>
-                ))}
+                {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(
+                  (bg) => (
+                    <option key={bg} value={bg}>
+                      {bg}
+                    </option>
+                  )
+                )}
               </select>
             </div>
 
@@ -234,11 +251,15 @@ const Profile = () => {
                 value={formData.district || ""}
                 onChange={handleChange}
                 disabled={!isEditing}
-                className={`select select-bordered w-full ${!isEditing ? "bg-gray-100" : ""}`}
+                className={`select select-bordered w-full ${
+                  !isEditing ? "bg-gray-100" : ""
+                }`}
               >
                 <option value="">Select District</option>
-                {districts.map(d => (
-                  <option key={d.id} value={d.name}>{d.name}</option>
+                {districts.map((d) => (
+                  <option key={d.id} value={d.name}>
+                    {d.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -251,13 +272,19 @@ const Profile = () => {
                 value={formData.upazila || ""}
                 onChange={handleChange}
                 disabled={!isEditing || !formData.district}
-                className={`select select-bordered w-full ${!isEditing ? "bg-gray-100" : ""}`}
+                className={`select select-bordered w-full ${
+                  !isEditing ? "bg-gray-100" : ""
+                }`}
               >
                 <option value="">
-                  {formData.district ? "Select Upazila" : "First select district"}
+                  {formData.district
+                    ? "Select Upazila"
+                    : "First select district"}
                 </option>
-                {filteredUpazilas.map(u => (
-                  <option key={u.id} value={u.name}>{u.name}</option>
+                {filteredUpazilas.map((u) => (
+                  <option key={u.id} value={u.name}>
+                    {u.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -281,8 +308,8 @@ const Profile = () => {
                 value={profile.status === "active" ? "Active" : "Blocked"}
                 readOnly
                 className={`input input-bordered w-full font-bold ${
-                  profile.status === "active" 
-                    ? "bg-green-100 text-green-800" 
+                  profile.status === "active"
+                    ? "bg-green-100 text-green-800"
                     : "bg-red-100 text-red-800"
                 }`}
               />

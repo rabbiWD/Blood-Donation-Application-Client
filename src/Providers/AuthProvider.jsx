@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
@@ -8,82 +8,72 @@ import {
   signInWithPopup,
   signOut,
   updateProfile,
-} from 'firebase/auth'
-import { app } from '../firebase/firebase.config'
-import { AuthContext } from './AuthContext'
-import axios from 'axios'
+} from "firebase/auth";
+import { app } from "../firebase/firebase.config";
+import { AuthContext } from "./AuthContext";
+import axios from "axios";
 // import axios from 'axios'
 
-const auth = getAuth(app)
-const googleProvider = new GoogleAuthProvider()
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [role, setRole] = useState('');
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState("");
 
   const registerUser = (email, password) => {
-    setLoading(true)
-    return createUserWithEmailAndPassword(auth, email, password)
-  }
+    setLoading(true);
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
 
   const signIn = (email, password) => {
-    setLoading(true)
-    return signInWithEmailAndPassword(auth, email, password)
-  }
+    setLoading(true);
+    return signInWithEmailAndPassword(auth, email, password);
+  };
 
   const signInWithGoogle = () => {
-    setLoading(true)
-    return signInWithPopup(auth, googleProvider)
-  }
+    setLoading(true);
+    return signInWithPopup(auth, googleProvider);
+  };
 
   const logOut = async () => {
-    setLoading(true)
-    return signOut(auth)
-  }
+    setLoading(true);
+    return signOut(auth);
+  };
 
   const updateUserProfile = (user) => {
-    console.log(user)
+    console.log(user);
     return updateProfile(auth.currentUser, {
       displayName: user.name,
       photoURL: user.photoURL,
-    })
-  }
+    });
+  };
 
-  // onAuthStateChange
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, async currentUser => {
-  //     console.log('CurrentUser-->', currentUser?.email)
-  //     setUser(currentUser)
-  //     setLoading(false)
-  //   })
-  //   return () => {
-  //     return unsubscribe()
-  //   }
-  // }, [])
 
-   const fetchUserRole = async (email) => {
-  try {
-    const res = await axios.get(`http://localhost:3000/user/role/${email}`);
-    setRole(res.data.role);
-    // setStatus(res.data.status);
-    setLoading(false);
-  } catch (err) {
-    console.log("Role fetch error:", err);
-    setLoading(false);
-  }
-};
+
+  const fetchUserRole = async (email) => {
+    try {
+      const res = await axios.get(
+        `https://blood-donation-application-server-phi.vercel.app/user/role/${email}`
+      );
+      setRole(res.data.role);
+      // setStatus(res.data.status);
+      setLoading(false);
+    } catch (err) {
+      console.log("Role fetch error:", err);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async currentUser=> {
-      console.log('CurrentUser-->', currentUser?.email)
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      console.log("CurrentUser-->", currentUser?.email);
       setUser(currentUser);
 
       if (currentUser) {
-     
         fetchUserRole(currentUser.email);
       } else {
-        
         setRole("donor");
         setLoading(false);
       }
@@ -92,19 +82,8 @@ const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-
-
-  // Role set
-  // useEffect(()=>{
-  //   if(!user) return;
-  //   axios.get(`http://localhost:3000/user/role/${user.email}`)
-  //   .then(res =>{
-  //     setRole(res.data.role)
-  //   })
-  // }, [user])
-  console.log(role)
-
   
+  console.log(role);
 
   const authInfo = {
     user,
@@ -117,12 +96,11 @@ const AuthProvider = ({ children }) => {
     logOut,
     role,
     updateUserProfile,
-  }
-
+  };
 
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
-  )
-}
+  );
+};
 
-export default AuthProvider
+export default AuthProvider;

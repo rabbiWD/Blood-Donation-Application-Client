@@ -30,7 +30,9 @@ const Search = () => {
   // Filter upazilas based on selected district
   useEffect(() => {
     if (searchData.district) {
-      const selectedDistrict = districts.find((d) => d.name === searchData.district);
+      const selectedDistrict = districts.find(
+        (d) => d.name === searchData.district
+      );
       if (selectedDistrict) {
         const relatedUpazilas = upazilas.filter(
           (u) => u.district_id === selectedDistrict.id
@@ -61,12 +63,14 @@ const Search = () => {
 
     try {
       const queryParams = new URLSearchParams();
-      if (searchData.bloodGroup) queryParams.append("bloodGroup", searchData.bloodGroup);
-      if (searchData.district) queryParams.append("district", searchData.district);
+      if (searchData.bloodGroup)
+        queryParams.append("bloodGroup", searchData.bloodGroup);
+      if (searchData.district)
+        queryParams.append("district", searchData.district);
       if (searchData.upazila) queryParams.append("upazila", searchData.upazila);
 
       const res = await axios.get(
-        `http://localhost:3000/search/donors?${queryParams.toString()}`
+        `https://blood-donation-application-server-phi.vercel.app/search/donors?${queryParams.toString()}`
       );
       setDonors(res.data);
     } catch (error) {
@@ -85,7 +89,10 @@ const Search = () => {
 
       {/* Search Form */}
       <div className="card bg-base-100 shadow-xl p-8 mb-12">
-        <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <form
+          onSubmit={handleSearch}
+          className="grid grid-cols-1 md:grid-cols-4 gap-6"
+        >
           {/* Blood Group */}
           <div>
             <label className="label font-semibold">Blood Group</label>
@@ -137,7 +144,9 @@ const Search = () => {
               disabled={!searchData.district}
             >
               <option value="">
-                {searchData.district ? "Select Upazila" : "First select a district"}
+                {searchData.district
+                  ? "Select Upazila"
+                  : "First select a district"}
               </option>
               {filteredUpazilas.map((u) => (
                 <option key={u.id} value={u.name}>
@@ -170,7 +179,9 @@ const Search = () => {
 
         {!loading && searched && donors.length === 0 && (
           <div className="alert alert-info shadow-lg text-center py-8">
-            <span>No donors found matching your criteria. Try different filters.</span>
+            <span>
+              No donors found matching your criteria. Try different filters.
+            </span>
           </div>
         )}
 
@@ -207,9 +218,12 @@ const Search = () => {
                     <p className="text-lg font-semibold text-red-600">
                       Blood Group: {donor.bloodGroup}
                     </p>
-                    <p>Location: {donor.upazila}, {donor.district}</p>
+                    <p>
+                      Location: {donor.upazila}, {donor.district}
+                    </p>
                     <p className="text-sm text-gray-600 mt-2">
-                      Status: {donor.status === "active" ? "Available" : "Inactive"}
+                      Status:{" "}
+                      {donor.status === "active" ? "Available" : "Inactive"}
                     </p>
                   </div>
                 </div>
@@ -220,7 +234,9 @@ const Search = () => {
 
         {!searched && (
           <div className="text-center text-gray-500 mt-20">
-            <p className="text-2xl">Fill the form above to search for blood donors</p>
+            <p className="text-2xl">
+              Fill the form above to search for blood donors
+            </p>
           </div>
         )}
       </div>

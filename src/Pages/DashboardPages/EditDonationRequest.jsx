@@ -19,13 +19,12 @@ const EditDonationRequest = () => {
 
   // Load districts & upazilas
   useEffect(() => {
-    Promise.all([
-      axios.get("/district.json"),
-      axios.get("/upazila.json")
-    ]).then(([distRes, upaRes]) => {
-      setDistricts(distRes.data.districts || []);
-      setUpazilas(upaRes.data.upazilas || []);
-    }).catch(err => console.error("Failed to load locations:", err));
+    Promise.all([axios.get("/district.json"), axios.get("/upazila.json")])
+      .then(([distRes, upaRes]) => {
+        setDistricts(distRes.data.districts || []);
+        setUpazilas(upaRes.data.upazilas || []);
+      })
+      .catch((err) => console.error("Failed to load locations:", err));
   }, []);
 
   // Fetch the request
@@ -33,7 +32,9 @@ const EditDonationRequest = () => {
     const fetchRequest = async () => {
       try {
         // ঠিক করা হয়েছে: plural রুট ব্যবহার
-        const res = await axios.get(`http://localhost:3000/donation-request/${id}`);
+        const res = await axios.get(
+          `https://blood-donation-application-server-phi.vercel.app/donation-request/${id}`
+        );
         const req = res.data;
 
         // Security check
@@ -64,14 +65,17 @@ const EditDonationRequest = () => {
   // Filter upazilas
   useEffect(() => {
     if (formData.district && districts.length > 0) {
-      const selected = districts.find(d => d.name === formData.district);
+      const selected = districts.find((d) => d.name === formData.district);
       if (selected) {
-        const filtered = upazilas.filter(u => u.district_id === selected.id);
+        const filtered = upazilas.filter((u) => u.district_id === selected.id);
         setFilteredUpazilas(filtered);
 
         // Reset upazila if invalid after district change
-        if (formData.upazila && !filtered.some(u => u.name === formData.upazila)) {
-          setFormData(prev => ({ ...prev, upazila: "" }));
+        if (
+          formData.upazila &&
+          !filtered.some((u) => u.name === formData.upazila)
+        ) {
+          setFormData((prev) => ({ ...prev, upazila: "" }));
         }
       } else {
         setFilteredUpazilas([]);
@@ -83,7 +87,7 @@ const EditDonationRequest = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleUpdate = async (e) => {
@@ -91,7 +95,10 @@ const EditDonationRequest = () => {
     setSaving(true);
     try {
       // plural রুট
-      await axios.patch(`http://localhost:3000/donation-request/${id}`, formData);
+      await axios.patch(
+        `https://blood-donation-application-server-phi.vercel.app/donation-request/${id}`,
+        formData
+      );
       alert("Request updated successfully!");
       navigate("/dashboard/my-donation-requests");
     } catch (error) {
@@ -116,7 +123,10 @@ const EditDonationRequest = () => {
         Edit Donation Request
       </h1>
 
-      <form onSubmit={handleUpdate} className="card bg-base-100 shadow-xl p-8 space-y-6">
+      <form
+        onSubmit={handleUpdate}
+        className="card bg-base-100 shadow-xl p-8 space-y-6"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="label font-semibold">Recipient Name</label>
@@ -164,8 +174,10 @@ const EditDonationRequest = () => {
               className="select select-bordered w-full"
             >
               <option value="">Select Blood Group</option>
-              {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(bg => (
-                <option key={bg} value={bg}>{bg}</option>
+              {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((bg) => (
+                <option key={bg} value={bg}>
+                  {bg}
+                </option>
               ))}
             </select>
           </div>
@@ -180,8 +192,10 @@ const EditDonationRequest = () => {
               className="select select-bordered w-full"
             >
               <option value="">Select District</option>
-              {districts.map(d => (
-                <option key={d.id} value={d.name}>{d.name}</option>
+              {districts.map((d) => (
+                <option key={d.id} value={d.name}>
+                  {d.name}
+                </option>
               ))}
             </select>
           </div>
@@ -199,8 +213,10 @@ const EditDonationRequest = () => {
               <option value="">
                 {formData.district ? "Select Upazila" : "First select district"}
               </option>
-              {filteredUpazilas.map(u => (
-                <option key={u.id} value={u.name}>{u.name}</option>
+              {filteredUpazilas.map((u) => (
+                <option key={u.id} value={u.name}>
+                  {u.name}
+                </option>
               ))}
             </select>
           </div>

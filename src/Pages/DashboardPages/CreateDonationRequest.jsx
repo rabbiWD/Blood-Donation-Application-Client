@@ -4,7 +4,6 @@ import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router";
 
-
 const CreateDonationRequest = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -25,15 +24,21 @@ const CreateDonationRequest = () => {
 
   // Load districts & upazilas
   useEffect(() => {
-    axios.get("/district.json").then((res) => setDistricts(res.data.districts || []));
-    axios.get("/upazila.json").then((res) => setUpazilas(res.data.upazilas || []));
+    axios
+      .get("/district.json")
+      .then((res) => setDistricts(res.data.districts || []));
+    axios
+      .get("/upazila.json")
+      .then((res) => setUpazilas(res.data.upazilas || []));
   }, []);
 
   // Get user status (to block if not active)
   useEffect(() => {
     if (user?.email) {
       axios
-        .get(`http://localhost:3000/users/${user.email}`)
+        .get(
+          `https://blood-donation-application-server-phi.vercel.app/users/${user.email}`
+        )
         .then((res) => setUserStatus(res.data.status || "active"))
         .catch(() => setUserStatus("active"));
     }
@@ -78,7 +83,10 @@ const CreateDonationRequest = () => {
         status: "pending", // Default status
       };
 
-      await axios.post("http://localhost:3000/donation-request", payload);
+      await axios.post(
+        "https://blood-donation-application-server-phi.vercel.app/donation-request",
+        payload
+      );
       alert("Donation request created successfully!");
       reset();
       navigate("/dashboard");
@@ -157,12 +165,16 @@ const CreateDonationRequest = () => {
             <label className="label font-semibold">Recipient Name</label>
             <input
               type="text"
-              {...register("recipientName", { required: "Recipient name is required" })}
+              {...register("recipientName", {
+                required: "Recipient name is required",
+              })}
               className="input input-bordered w-full"
               placeholder="Enter recipient's name"
             />
             {errors.recipientName && (
-              <p className="text-error text-sm mt-1">{errors.recipientName.message}</p>
+              <p className="text-error text-sm mt-1">
+                {errors.recipientName.message}
+              </p>
             )}
           </div>
 
@@ -182,7 +194,9 @@ const CreateDonationRequest = () => {
                 ))}
               </select>
               {errors.district && (
-                <p className="text-error text-sm mt-1">{errors.district.message}</p>
+                <p className="text-error text-sm mt-1">
+                  {errors.district.message}
+                </p>
               )}
             </div>
 
@@ -194,7 +208,9 @@ const CreateDonationRequest = () => {
                 disabled={!selectedDistrict}
               >
                 <option value="">
-                  {selectedDistrict ? "Select Upazila" : "First select district"}
+                  {selectedDistrict
+                    ? "Select Upazila"
+                    : "First select district"}
                 </option>
                 {filteredUpazilas.map((u) => (
                   <option key={u.id} value={u.name}>
@@ -203,7 +219,9 @@ const CreateDonationRequest = () => {
                 ))}
               </select>
               {errors.upazila && (
-                <p className="text-error text-sm mt-1">{errors.upazila.message}</p>
+                <p className="text-error text-sm mt-1">
+                  {errors.upazila.message}
+                </p>
               )}
             </div>
           </div>
@@ -214,12 +232,16 @@ const CreateDonationRequest = () => {
               <label className="label font-semibold">Hospital Name</label>
               <input
                 type="text"
-                {...register("hospitalName", { required: "Hospital name is required" })}
+                {...register("hospitalName", {
+                  required: "Hospital name is required",
+                })}
                 className="input input-bordered w-full"
                 placeholder="e.g. Dhaka Medical College Hospital"
               />
               {errors.hospitalName && (
-                <p className="text-error text-sm mt-1">{errors.hospitalName.message}</p>
+                <p className="text-error text-sm mt-1">
+                  {errors.hospitalName.message}
+                </p>
               )}
             </div>
 
@@ -227,12 +249,16 @@ const CreateDonationRequest = () => {
               <label className="label font-semibold">Full Address</label>
               <input
                 type="text"
-                {...register("fullAddress", { required: "Address is required" })}
+                {...register("fullAddress", {
+                  required: "Address is required",
+                })}
                 className="input input-bordered w-full"
                 placeholder="e.g. Zahir Raihan Rd, Dhaka"
               />
               {errors.fullAddress && (
-                <p className="text-error text-sm mt-1">{errors.fullAddress.message}</p>
+                <p className="text-error text-sm mt-1">
+                  {errors.fullAddress.message}
+                </p>
               )}
             </div>
           </div>
@@ -242,7 +268,9 @@ const CreateDonationRequest = () => {
             <div>
               <label className="label font-semibold">Blood Group</label>
               <select
-                {...register("bloodGroup", { required: "Blood group is required" })}
+                {...register("bloodGroup", {
+                  required: "Blood group is required",
+                })}
                 className="select select-bordered w-full"
               >
                 <option value="">Select Blood Group</option>
@@ -256,7 +284,9 @@ const CreateDonationRequest = () => {
                 <option>O-</option>
               </select>
               {errors.bloodGroup && (
-                <p className="text-error text-sm mt-1">{errors.bloodGroup.message}</p>
+                <p className="text-error text-sm mt-1">
+                  {errors.bloodGroup.message}
+                </p>
               )}
             </div>
 
@@ -268,7 +298,9 @@ const CreateDonationRequest = () => {
                 className="input input-bordered w-full"
               />
               {errors.donationDate && (
-                <p className="text-error text-sm mt-1">{errors.donationDate.message}</p>
+                <p className="text-error text-sm mt-1">
+                  {errors.donationDate.message}
+                </p>
               )}
             </div>
 
@@ -280,7 +312,9 @@ const CreateDonationRequest = () => {
                 className="input input-bordered w-full"
               />
               {errors.donationTime && (
-                <p className="text-error text-sm mt-1">{errors.donationTime.message}</p>
+                <p className="text-error text-sm mt-1">
+                  {errors.donationTime.message}
+                </p>
               )}
             </div>
           </div>
@@ -289,12 +323,16 @@ const CreateDonationRequest = () => {
           <div>
             <label className="label font-semibold">Request Message</label>
             <textarea
-              {...register("requestMessage", { required: "Please write why you need blood" })}
+              {...register("requestMessage", {
+                required: "Please write why you need blood",
+              })}
               className="textarea textarea-bordered w-full h-32"
               placeholder="Describe why you need blood (e.g., accident, surgery, etc.)"
             />
             {errors.requestMessage && (
-              <p className="text-error text-sm mt-1">{errors.requestMessage.message}</p>
+              <p className="text-error text-sm mt-1">
+                {errors.requestMessage.message}
+              </p>
             )}
           </div>
 

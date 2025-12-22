@@ -3,7 +3,6 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router";
 import useAuth from "../../hooks/useAuth";
 
-
 const DonationRequestDetails = () => {
   const { id } = useParams();
   const { user, loading: authLoading } = useAuth();
@@ -26,7 +25,9 @@ const DonationRequestDetails = () => {
     if (user) {
       const fetchRequest = async () => {
         try {
-          const res = await axios.get(`http://localhost:3000/donation-request/${id}`);
+          const res = await axios.get(
+            `https://blood-donation-application-server-phi.vercel.app/donation-request/${id}`
+          );
           setRequest(res.data);
         } catch (error) {
           console.error("Error fetching request:", error);
@@ -44,11 +45,14 @@ const DonationRequestDetails = () => {
 
     setSubmitting(true);
     try {
-      await axios.patch(`http://localhost:3000/donation-requests/${id}/donate`, {
-        donorName: user.displayName || "Anonymous",
-        donorEmail: user.email,
-        status: "inprogress", // Change status to inprogress
-      });
+      await axios.patch(
+        `https://blood-donation-application-server-phi.vercel.app/donation-requests/${id}/donate`,
+        {
+          donorName: user.displayName || "Anonymous",
+          donorEmail: user.email,
+          status: "inprogress", // Change status to inprogress
+        }
+      );
 
       // Update local state to reflect new status
       setRequest((prev) => ({ ...prev, status: "inprogress" }));
@@ -57,7 +61,9 @@ const DonationRequestDetails = () => {
       setModalOpen(false);
 
       // Optional: Show success message
-      alert("Thank you! Your donation has been confirmed. The request is now in progress.");
+      alert(
+        "Thank you! Your donation has been confirmed. The request is now in progress."
+      );
     } catch (error) {
       console.error("Error confirming donation:", error);
       alert("Failed to confirm donation. Please try again.");
@@ -91,21 +97,44 @@ const DonationRequestDetails = () => {
           {/* Request Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-lg mb-10">
             <div className="space-y-4">
-              <p><span className="font-semibold">Recipient Name:</span> {request.recipientName}</p>
-              <p><span className="font-semibold">Blood Group:</span>{" "}
-                <span className="text-red-600 font-bold text-xl">{request.bloodGroup}</span>
+              <p>
+                <span className="font-semibold">Recipient Name:</span>{" "}
+                {request.recipientName}
               </p>
-              <p><span className="font-semibold">Location:</span> {request.upazila}, {request.district}</p>
-              <p><span className="font-semibold">Hospital:</span> {request.hospitalName}</p>
+              <p>
+                <span className="font-semibold">Blood Group:</span>{" "}
+                <span className="text-red-600 font-bold text-xl">
+                  {request.bloodGroup}
+                </span>
+              </p>
+              <p>
+                <span className="font-semibold">Location:</span>{" "}
+                {request.upazila}, {request.district}
+              </p>
+              <p>
+                <span className="font-semibold">Hospital:</span>{" "}
+                {request.hospitalName}
+              </p>
             </div>
             <div className="space-y-4">
-              <p><span className="font-semibold">Donation Date:</span>{" "}
+              <p>
+                <span className="font-semibold">Donation Date:</span>{" "}
                 {new Date(request.donationDate).toLocaleDateString()}
               </p>
-              <p><span className="font-semibold">Donation Time:</span> {request.donationTime}</p>
-              <p><span className="font-semibold">Status:</span>{" "}
-                <span className={`badge ${request.status === 'pending' ? 'badge-warning' : 'badge-success'}`}>
-                  {request.status === 'pending' ? 'Pending' : 'In Progress'}
+              <p>
+                <span className="font-semibold">Donation Time:</span>{" "}
+                {request.donationTime}
+              </p>
+              <p>
+                <span className="font-semibold">Status:</span>{" "}
+                <span
+                  className={`badge ${
+                    request.status === "pending"
+                      ? "badge-warning"
+                      : "badge-success"
+                  }`}
+                >
+                  {request.status === "pending" ? "Pending" : "In Progress"}
                 </span>
               </p>
             </div>
@@ -119,9 +148,18 @@ const DonationRequestDetails = () => {
           </div>
 
           <div className="space-y-3">
-            <p><span className="font-semibold">Requester:</span> {request.requesterName}</p>
-            <p><span className="font-semibold">Contact Email:</span> {request.requesterEmail}</p>
-            <p><span className="font-semibold">Phone:</span> {request.phoneNumber}</p>
+            <p>
+              <span className="font-semibold">Requester:</span>{" "}
+              {request.requesterName}
+            </p>
+            <p>
+              <span className="font-semibold">Contact Email:</span>{" "}
+              {request.requesterEmail}
+            </p>
+            <p>
+              <span className="font-semibold">Phone:</span>{" "}
+              {request.phoneNumber}
+            </p>
           </div>
 
           {/* Donate Button - Only show if pending */}
@@ -138,7 +176,9 @@ const DonationRequestDetails = () => {
 
           {!isPending && (
             <div className="alert alert-info mt-10">
-              <span>This request is already in progress. Thank you for your support!</span>
+              <span>
+                This request is already in progress. Thank you for your support!
+              </span>
             </div>
           )}
         </div>
@@ -147,7 +187,12 @@ const DonationRequestDetails = () => {
       {/* Donate Confirmation Modal */}
       {modalOpen && (
         <>
-          <input type="checkbox" id="donate-modal" className="modal-toggle" checked />
+          <input
+            type="checkbox"
+            id="donate-modal"
+            className="modal-toggle"
+            checked
+          />
           <div className="modal modal-open">
             <div className="modal-box">
               <h3 className="font-bold text-2xl mb-6 text-center text-green-600">
@@ -177,8 +222,9 @@ const DonationRequestDetails = () => {
 
                 <div className="alert alert-warning mt-6">
                   <span>
-                    You are about to confirm that you will donate blood for this request.
-                    The status will change to <strong>"In Progress"</strong>.
+                    You are about to confirm that you will donate blood for this
+                    request. The status will change to{" "}
+                    <strong>"In Progress"</strong>.
                   </span>
                 </div>
               </div>

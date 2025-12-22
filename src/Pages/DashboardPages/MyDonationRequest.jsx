@@ -25,7 +25,7 @@ const MyDonationRequests = () => {
   const fetchMyRequests = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3000/my-donation-request/${user.email}` // plural "requests"
+        `https://blood-donation-application-server-phi.vercel.app/my-donation-request/${user.email}` // plural "requests"
       );
       setRequests(res.data);
       setFilteredRequests(res.data);
@@ -53,7 +53,10 @@ const MyDonationRequests = () => {
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredRequests.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredRequests.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
   const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
@@ -62,12 +65,18 @@ const MyDonationRequests = () => {
 
   // Delete request with confirmation
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this donation request? This action cannot be undone.")) {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this donation request? This action cannot be undone."
+      )
+    ) {
       return;
     }
 
     try {
-      await axios.delete(`http://localhost:3000/donation-request/${id}`);
+      await axios.delete(
+        `https://blood-donation-application-server-phi.vercel.app/donation-request/${id}`
+      );
       // Remove from local state
       setRequests((prev) => prev.filter((req) => req._id !== id));
       alert("Request deleted successfully!");
@@ -111,14 +120,17 @@ const MyDonationRequests = () => {
                 : "btn-outline"
             }`}
           >
-            {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
+            {status === "all"
+              ? "All"
+              : status.charAt(0).toUpperCase() + status.slice(1)}
           </button>
         ))}
       </div>
 
       {/* Results Count */}
       <p className="mb-4 text-lg font-medium">
-        Showing {filteredRequests.length} request{filteredRequests.length !== 1 ? "s" : ""}
+        Showing {filteredRequests.length} request
+        {filteredRequests.length !== 1 ? "s" : ""}
       </p>
 
       {/* Table */}
@@ -138,7 +150,10 @@ const MyDonationRequests = () => {
           <tbody>
             {currentItems.length === 0 ? (
               <tr>
-                <td colSpan="7" className="text-center py-16 text-gray-500 text-xl">
+                <td
+                  colSpan="7"
+                  className="text-center py-16 text-gray-500 text-xl"
+                >
                   No donation requests found for this filter.
                 </td>
               </tr>
@@ -146,7 +161,9 @@ const MyDonationRequests = () => {
               currentItems.map((request) => (
                 <tr key={request._id} className="hover">
                   <td className="font-medium">{request.recipientName}</td>
-                  <td>{request.upazila}, {request.district}</td>
+                  <td>
+                    {request.upazila}, {request.district}
+                  </td>
                   <td>
                     <span className="badge badge-lg badge-error text-white font-bold">
                       {request.bloodGroup}
@@ -166,7 +183,8 @@ const MyDonationRequests = () => {
                           : "badge-error"
                       }`}
                     >
-                      {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                      {request.status.charAt(0).toUpperCase() +
+                        request.status.slice(1)}
                     </span>
                   </td>
                   <td>
@@ -179,7 +197,9 @@ const MyDonationRequests = () => {
                       {/* Edit Button - only for pending */}
                       {request.status === "pending" && (
                         <Link to={`/dashboard/edit-request/${request._id}`}>
-                          <button className="btn btn-sm btn-warning">Edit</button>
+                          <button className="btn btn-sm btn-warning">
+                            Edit
+                          </button>
                         </Link>
                       )}
 
@@ -215,7 +235,9 @@ const MyDonationRequests = () => {
             {[...Array(totalPages)].map((_, i) => (
               <button
                 key={i + 1}
-                className={`join-item btn ${currentPage === i + 1 ? "btn-active" : ""}`}
+                className={`join-item btn ${
+                  currentPage === i + 1 ? "btn-active" : ""
+                }`}
                 onClick={() => handlePageChange(i + 1)}
               >
                 {i + 1}

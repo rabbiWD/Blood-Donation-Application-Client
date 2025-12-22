@@ -21,7 +21,7 @@ const DashboardHome = () => {
   const fetchRecentRequests = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3000/my-donation-request/${user.email}?limit=3`
+        `https://blood-donation-application-server-phi.vercel.app/my-donation-request/${user.email}?limit=3`
       );
       setRecentRequests(res.data);
     } catch (error) {
@@ -33,15 +33,21 @@ const DashboardHome = () => {
 
   // Handle status change (Done / Cancel)
   const handleStatusChange = async (id, newStatus) => {
-    if (!window.confirm(`Are you sure you want to mark this as ${newStatus}?`)) return;
+    if (!window.confirm(`Are you sure you want to mark this as ${newStatus}?`))
+      return;
 
     try {
-      await axios.patch(`http://localhost:3000/donation-request/${id}/status`, {
-        status: newStatus,
-      });
+      await axios.patch(
+        `https://blood-donation-application-server-phi.vercel.app/donation-request/${id}/status`,
+        {
+          status: newStatus,
+        }
+      );
       // Update local state
       setRecentRequests((prev) =>
-        prev.map((req) => (req._id === id ? { ...req, status: newStatus } : req))
+        prev.map((req) =>
+          req._id === id ? { ...req, status: newStatus } : req
+        )
       );
     } catch (error) {
       console.error("Error updating status:", error);
@@ -51,10 +57,17 @@ const DashboardHome = () => {
 
   // Handle delete
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this request? This action cannot be undone.")) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this request? This action cannot be undone."
+      )
+    )
+      return;
 
     try {
-      await axios.delete(`http://localhost:3000/donation-request/${id}`);
+      await axios.delete(
+        `https://blood-donation-application-server-phi.vercel.app/donation-request/${id}`
+      );
       setRecentRequests((prev) => prev.filter((req) => req._id !== id));
     } catch (error) {
       console.error("Error deleting request:", error);
@@ -107,7 +120,9 @@ const DashboardHome = () => {
                 {recentRequests.map((req) => (
                   <tr key={req._id}>
                     <td className="font-medium">{req.recipientName}</td>
-                    <td>{req.upazila}, {req.district}</td>
+                    <td>
+                      {req.upazila}, {req.district}
+                    </td>
                     <td>
                       <span className="badge badge-error badge-lg text-white">
                         {req.bloodGroup}
@@ -118,20 +133,26 @@ const DashboardHome = () => {
                     <td>
                       <span
                         className={`badge badge-lg ${
-                          req.status === "pending" ? "badge-warning" :
-                          req.status === "inprogress" ? "badge-info" :
-                          req.status === "done" ? "badge-success" :
-                          "badge-error"
+                          req.status === "pending"
+                            ? "badge-warning"
+                            : req.status === "inprogress"
+                            ? "badge-info"
+                            : req.status === "done"
+                            ? "badge-success"
+                            : "badge-error"
                         }`}
                       >
-                        {req.status.charAt(0).toUpperCase() + req.status.slice(1)}
+                        {req.status.charAt(0).toUpperCase() +
+                          req.status.slice(1)}
                       </span>
                     </td>
                     <td>
                       {req.status === "inprogress" && req.donorName ? (
                         <div>
                           <p className="font-medium">{req.donorName}</p>
-                          <p className="text-sm text-gray-600">{req.donorEmail}</p>
+                          <p className="text-sm text-gray-600">
+                            {req.donorEmail}
+                          </p>
                         </div>
                       ) : (
                         "-"
@@ -140,12 +161,16 @@ const DashboardHome = () => {
                     <td>
                       <div className="flex flex-wrap gap-2">
                         <Link to={`/donation-request/${req._id}`}>
-                          <button className="btn btn-sm btn-primary">View</button>
+                          <button className="btn btn-sm btn-primary">
+                            View
+                          </button>
                         </Link>
 
                         {req.status === "pending" && (
                           <Link to={`/dashboard/edit-request/${req._id}`}>
-                            <button className="btn btn-sm btn-warning">Edit</button>
+                            <button className="btn btn-sm btn-warning">
+                              Edit
+                            </button>
                           </Link>
                         )}
 
@@ -161,13 +186,17 @@ const DashboardHome = () => {
                         {req.status === "inprogress" && (
                           <>
                             <button
-                              onClick={() => handleStatusChange(req._id, "done")}
+                              onClick={() =>
+                                handleStatusChange(req._id, "done")
+                              }
                               className="btn btn-sm btn-success"
                             >
                               Done
                             </button>
                             <button
-                              onClick={() => handleStatusChange(req._id, "canceled")}
+                              onClick={() =>
+                                handleStatusChange(req._id, "canceled")
+                              }
                               className="btn btn-sm btn-error"
                             >
                               Cancel

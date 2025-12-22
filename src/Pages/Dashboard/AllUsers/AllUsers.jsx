@@ -21,7 +21,9 @@ const AllUsers = () => {
   const fetchUsers = async () => {
     try {
       // সার্ভারে নতুন রুট দরকার: /all-users (সব ইউজারের লিস্ট)
-      const res = await axios.get("http://localhost:3000/all-users");
+      const res = await axios.get(
+        "https://blood-donation-application-server-phi.vercel.app/all-users"
+      );
       const allUsers = Array.isArray(res.data) ? res.data : [];
       setUsers(allUsers);
       setFilteredUsers(allUsers);
@@ -75,8 +77,13 @@ const AllUsers = () => {
     }
 
     try {
-      await axios.patch(`http://localhost:3000/users/${email}`, { status: newStatus });
-      toast.success(`User ${newStatus === "blocked" ? "blocked" : "unblocked"} successfully`);
+      await axios.patch(
+        `https://blood-donation-application-server-phi.vercel.app/users/${email}`,
+        { status: newStatus }
+      );
+      toast.success(
+        `User ${newStatus === "blocked" ? "blocked" : "unblocked"} successfully`
+      );
       fetchUsers();
     } catch (error) {
       toast.error("Failed to update status");
@@ -92,7 +99,10 @@ const AllUsers = () => {
     }
 
     try {
-      await axios.patch(`http://localhost:3000/users/${email}`, { role: newRole });
+      await axios.patch(
+        `https://blood-donation-application-server-phi.vercel.app/users/${email}`,
+        { role: newRole }
+      );
       toast.success(`User role changed to ${newRole}`);
       fetchUsers();
     } catch (error) {
@@ -144,7 +154,10 @@ const AllUsers = () => {
           <tbody>
             {currentUsers.length === 0 ? (
               <tr>
-                <td colSpan="6" className="text-center py-10 text-gray-500 text-xl">
+                <td
+                  colSpan="6"
+                  className="text-center py-10 text-gray-500 text-xl"
+                >
                   No users found
                 </td>
               </tr>
@@ -217,7 +230,9 @@ const AllUsers = () => {
                         {u.status === "active" ? (
                           <li>
                             <button
-                              onClick={() => handleStatusChange(u.email, "blocked")}
+                              onClick={() =>
+                                handleStatusChange(u.email, "blocked")
+                              }
                               className="text-error"
                             >
                               Block User
@@ -226,7 +241,9 @@ const AllUsers = () => {
                         ) : (
                           <li>
                             <button
-                              onClick={() => handleStatusChange(u.email, "active")}
+                              onClick={() =>
+                                handleStatusChange(u.email, "active")
+                              }
                               className="text-success"
                             >
                               Unblock User
@@ -235,7 +252,11 @@ const AllUsers = () => {
                         )}
                         {u.role !== "volunteer" && u.role !== "admin" && (
                           <li>
-                            <button onClick={() => handleRoleChange(u.email, "volunteer")}>
+                            <button
+                              onClick={() =>
+                                handleRoleChange(u.email, "volunteer")
+                              }
+                            >
                               Make Volunteer
                             </button>
                           </li>
@@ -274,7 +295,9 @@ const AllUsers = () => {
             {[...Array(totalPages)].map((_, i) => (
               <button
                 key={i + 1}
-                className={`join-item btn ${currentPage === i + 1 ? "btn-active" : ""}`}
+                className={`join-item btn ${
+                  currentPage === i + 1 ? "btn-active" : ""
+                }`}
                 onClick={() => handlePageChange(i + 1)}
               >
                 {i + 1}
