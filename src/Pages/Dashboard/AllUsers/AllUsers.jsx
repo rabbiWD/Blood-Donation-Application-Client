@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
 
 const AllUsers = () => {
-  const { user: currentUser } = useAuth(); // current logged in user
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,13 +20,14 @@ const AllUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      // সার্ভারে নতুন রুট দরকার: /all-users (সব ইউজারের লিস্ট)
       const res = await axios.get(
         "https://blood-donation-application-server-phi.vercel.app/all-users"
       );
       const allUsers = Array.isArray(res.data) ? res.data : [];
-      setUsers(allUsers);
-      setFilteredUsers(allUsers);
+      // ফিল্টার করো যাতে শুধু valid email যুক্ত ইউজার থাকে
+      const validUsers = allUsers.filter((u) => u.email && typeof u.email === "string");
+      setUsers(validUsers);
+      setFilteredUsers(validUsers);
     } catch (error) {
       console.error("Error fetching users:", error);
       toast.error("Failed to load users");
@@ -37,17 +38,14 @@ const AllUsers = () => {
     }
   };
 
-  // Filter users
+  // Filter logic
   useEffect(() => {
-    if (!Array.isArray(users)) {
-      setFilteredUsers([]);
-      return;
-    }
-
     let filtered = users;
+
     if (filter !== "all") {
       filtered = users.filter((u) => u.status === filter);
     }
+
     setFilteredUsers(filtered);
     setCurrentPage(1);
   }, [filter, users]);
@@ -55,13 +53,8 @@ const AllUsers = () => {
   // Pagination
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentUsers = Array.isArray(filteredUsers)
-    ? filteredUsers.slice(indexOfFirst, indexOfLast)
-    : [];
-
-  const totalPages = Array.isArray(filteredUsers)
-    ? Math.ceil(filteredUsers.length / itemsPerPage)
-    : 1;
+  const currentUsers = filteredUsers.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -69,9 +62,14 @@ const AllUsers = () => {
     }
   };
 
-  // Change status (block/unblock)
+  const isCurrentUser = (email) => currentUser?.email === email;
+
   const handleStatusChange = async (email, newStatus) => {
-    if (currentUser?.email === email) {
+    if (!email) {
+      toast.error("Invalid user email!");
+      return;
+    }
+    if (isCurrentUser(email)) {
       toast.error("You cannot block/unblock yourself!");
       return;
     }
@@ -81,9 +79,7 @@ const AllUsers = () => {
         `https://blood-donation-application-server-phi.vercel.app/users/${email}`,
         { status: newStatus }
       );
-      toast.success(
-        `User ${newStatus === "blocked" ? "blocked" : "unblocked"} successfully`
-      );
+      toast.success(`User ${newStatus === "blocked" ? "blocked" : "unblocked"} successfully`);
       fetchUsers();
     } catch (error) {
       toast.error("Failed to update status");
@@ -91,9 +87,12 @@ const AllUsers = () => {
     }
   };
 
-  // Change role
   const handleRoleChange = async (email, newRole) => {
-    if (currentUser?.email === email) {
+    if (!email) {
+      toast.error("Invalid user email!");
+      return;
+    }
+    if (isCurrentUser(email)) {
       toast.error("You cannot change your own role!");
       return;
     }
@@ -143,6 +142,7 @@ const AllUsers = () => {
         <table className="table table-zebra w-full">
           <thead>
             <tr className="bg-red-50 text-lg">
+              <th>#</th>
               <th>Avatar</th>
               <th>Name</th>
               <th>Email</th>
@@ -154,23 +154,21 @@ const AllUsers = () => {
           <tbody>
             {currentUsers.length === 0 ? (
               <tr>
-                <td
-                  colSpan="6"
-                  className="text-center py-10 text-gray-500 text-xl"
-                >
+                <td colSpan="7" className="text-center py-12 text-gray-500 text-xl">
                   No users found
                 </td>
               </tr>
             ) : (
-              currentUsers.map((u) => (
+              currentUsers.map((u, index) => (
                 <tr key={u.email} className="hover">
+                  <td>{indexOfFirst + index + 1}</td>
                   <td>
                     {u.photoURL ? (
-                      <img
-                        src={u.photoURL}
-                        alt={u.name}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
+                      <div className="avatar">
+                        <div className="w-12 rounded-full ring ring-red-200 ring-offset-base-100 ring-offset-2">
+                          <img src={u.photoURL} alt={u.name || "User"} />
+                        </div>
+                      </div>
                     ) : (
                       <div className="avatar placeholder">
                         <div className="bg-neutral text-neutral-content rounded-full w-12">
@@ -182,10 +180,12 @@ const AllUsers = () => {
                     )}
                   </td>
                   <td className="font-medium">{u.name || "N/A"}</td>
-                  <td>{u.email}</td>
+                  <td className="font-mono text-sm">
+                    {u.email || <span className="text-error font-bold">Missing Email!</span>}
+                  </td>
                   <td>
                     <span
-                      className={`badge ${
+                      className={`badge badge-lg ${
                         u.role === "admin"
                           ? "badge-primary"
                           : u.role === "volunteer"
@@ -198,7 +198,7 @@ const AllUsers = () => {
                   </td>
                   <td>
                     <span
-                      className={`badge ${
+                      className={`badge badge-lg ${
                         u.status === "active" ? "badge-success" : "badge-error"
                       }`}
                     >
@@ -225,50 +225,62 @@ const AllUsers = () => {
                       </label>
                       <ul
                         tabIndex={0}
-                        className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-10"
+                        className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-50"
                       >
-                        {u.status === "active" ? (
-                          <li>
-                            <button
-                              onClick={() =>
-                                handleStatusChange(u.email, "blocked")
-                              }
-                              className="text-error"
-                            >
-                              Block User
-                            </button>
-                          </li>
-                        ) : (
-                          <li>
-                            <button
-                              onClick={() =>
-                                handleStatusChange(u.email, "active")
-                              }
-                              className="text-success"
-                            >
-                              Unblock User
-                            </button>
-                          </li>
+                        {/* Block/Unblock - শুধু valid email থাকলে দেখাবে */}
+                        {u.email && (
+                          <>
+                            {u.status === "active" ? (
+                              <li>
+                                <button
+                                  onClick={() => handleStatusChange(u.email, "blocked")}
+                                  className="text-error"
+                                  disabled={isCurrentUser(u.email)}
+                                >
+                                  Block User
+                                </button>
+                              </li>
+                            ) : (
+                              <li>
+                                <button
+                                  onClick={() => handleStatusChange(u.email, "active")}
+                                  className="text-success"
+                                  disabled={isCurrentUser(u.email)}
+                                >
+                                  Unblock User
+                                </button>
+                              </li>
+                            )}
+
+                            {u.role !== "volunteer" && (
+                              <li>
+                                <button
+                                  onClick={() => handleRoleChange(u.email, "volunteer")}
+                                  disabled={isCurrentUser(u.email)}
+                                >
+                                  Make Volunteer
+                                </button>
+                              </li>
+                            )}
+
+                            {u.role !== "admin" && (
+                              <li>
+                                <button
+                                  onClick={() => handleRoleChange(u.email, "admin")}
+                                  className="text-primary font-medium"
+                                  disabled={isCurrentUser(u.email)}
+                                >
+                                  Make Admin
+                                </button>
+                              </li>
+                            )}
+                          </>
                         )}
-                        {u.role !== "volunteer" && u.role !== "admin" && (
+
+                        {/* যদি email না থাকে */}
+                        {!u.email && (
                           <li>
-                            <button
-                              onClick={() =>
-                                handleRoleChange(u.email, "volunteer")
-                              }
-                            >
-                              Make Volunteer
-                            </button>
-                          </li>
-                        )}
-                        {u.role !== "admin" && (
-                          <li>
-                            <button
-                              onClick={() => handleRoleChange(u.email, "admin")}
-                              className="text-primary"
-                            >
-                              Make Admin
-                            </button>
+                            <span className="text-error px-4 py-2">Action Disabled (No Email)</span>
                           </li>
                         )}
                       </ul>
@@ -281,7 +293,7 @@ const AllUsers = () => {
         </table>
       </div>
 
-      {/* Pagination */}
+      {/* Pagination (আগের মতোই রাখলাম - কাজ করছে) */}
       {totalPages > 1 && (
         <div className="flex justify-center mt-10">
           <div className="join">
@@ -292,17 +304,54 @@ const AllUsers = () => {
             >
               «
             </button>
-            {[...Array(totalPages)].map((_, i) => (
+
+            <button
+              className={`join-item btn ${currentPage === 1 ? "btn-active" : ""}`}
+              onClick={() => handlePageChange(1)}
+            >
+              1
+            </button>
+
+            {currentPage > 4 && totalPages > 5 && (
+              <button className="join-item btn btn-disabled">...</button>
+            )}
+
+            {[...Array(totalPages)]
+              .slice(Math.max(1, currentPage - 2), Math.min(totalPages - 1, currentPage + 2))
+              .map((_, i) => {
+                const page = Math.max(2, currentPage - 2) + i;
+                return (
+                  <button
+                    key={page}
+                    className={`join-item btn ${currentPage === page ? "btn-active" : ""}`}
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </button>
+                );
+              })}
+
+            {currentPage < totalPages - 3 && totalPages > 5 && (
+              <>
+                <button className="join-item btn btn-disabled">...</button>
+                <button
+                  className={`join-item btn ${currentPage === totalPages ? "btn-active" : ""}`}
+                  onClick={() => handlePageChange(totalPages)}
+                >
+                  {totalPages}
+                </button>
+              </>
+            )}
+
+            {currentPage >= totalPages - 3 && totalPages > 5 && (
               <button
-                key={i + 1}
-                className={`join-item btn ${
-                  currentPage === i + 1 ? "btn-active" : ""
-                }`}
-                onClick={() => handlePageChange(i + 1)}
+                className={`join-item btn ${currentPage === totalPages ? "btn-active" : ""}`}
+                onClick={() => handlePageChange(totalPages)}
               >
-                {i + 1}
+                {totalPages}
               </button>
-            ))}
+            )}
+
             <button
               className="join-item btn"
               onClick={() => handlePageChange(currentPage + 1)}
