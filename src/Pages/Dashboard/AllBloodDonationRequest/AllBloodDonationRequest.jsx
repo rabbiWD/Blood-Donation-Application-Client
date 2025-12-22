@@ -6,7 +6,7 @@ import { AuthContext } from "../../../Providers/AuthContext";
 import toast from "react-hot-toast";
 import { Link } from "react-router";
 
-const AddRequest = () => {
+const AllBloodDonationRequest = () => {
   const { role } = useAuth(AuthContext);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +24,7 @@ const AddRequest = () => {
   const fetchRequests = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await axios.get("https://localhost:3000/add-request", {
+      const res = await axios.get("http://localhost:3000/all-blood-donation-request", {
         params: {
           page,
           limit: 10,
@@ -103,7 +103,7 @@ const AddRequest = () => {
         <div className="bg-base-100 dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden">
           <div className="bg-gradient-to-r from-red-600 to-red-700 px-8 py-10 text-center">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-              🩸 All Blood Donation Requests
+               All Blood Donation Requests
             </h1>
             <p className="mt-3 text-red-100 text-lg">
               Total: {pagination.totalRequests} requests
@@ -325,4 +325,4 @@ const AddRequest = () => {
   );
 }
 
-export default AddRequest;
+export default AllBloodDonationRequest;

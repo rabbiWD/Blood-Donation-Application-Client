@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import { Link } from "react-router";
-// import useAuth from "../../hooks/useAuth"; // Adjust path as needed
-// import { Link } from "react-router-dom";
+// import useAuth from "../../hooks/useAuth";
+// import { Link } from "react-router-dom"; // সঠিক ইমপোর্ট
 
 const MyDonationRequests = () => {
   const { user } = useAuth();
@@ -25,12 +25,14 @@ const MyDonationRequests = () => {
   const fetchMyRequests = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3000/my-donation-request/${user.email}`
+        `http://localhost:3000/my-donation-request/${user.email}` // plural "requests"
       );
       setRequests(res.data);
       setFilteredRequests(res.data);
     } catch (error) {
       console.error("Error fetching my requests:", error);
+      setRequests([]);
+      setFilteredRequests([]);
     } finally {
       setLoading(false);
     }
@@ -45,80 +47,85 @@ const MyDonationRequests = () => {
         requests.filter((req) => req.status === statusFilter)
       );
     }
-    setCurrentPage(1); // Reset to first page on filter
+    setCurrentPage(1);
   }, [statusFilter, requests]);
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredRequests.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentItems = filteredRequests.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
+  // Delete request with confirmation
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this donation request? This action cannot be undone.")) {
+      return;
+    }
+
+    try {
+      await axios.delete(`http://localhost:3000/donation-request/${id}`);
+      // Remove from local state
+      setRequests((prev) => prev.filter((req) => req._id !== id));
+      alert("Request deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting request:", error);
+      alert("Failed to delete request. Please try again.");
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-96">
-        <span className="loading loading-spinner loading-lg"></span>
+        <span className="loading loading-spinner loading-lg text-red-600"></span>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold text-red-600 mb-8">
         My Donation Requests
       </h1>
 
       {/* Status Filter */}
       <div className="mb-6 flex flex-wrap gap-3">
-        <button
-          onClick={() => setStatusFilter("all")}
-          className={`btn ${statusFilter === "all" ? "btn-primary" : "btn-outline"}`}
-        >
-          All
-        </button>
-        <button
-          onClick={() => setStatusFilter("pending")}
-          className={`btn ${statusFilter === "pending" ? "btn-warning" : "btn-outline"}`}
-        >
-          Pending
-        </button>
-        <button
-          onClick={() => setStatusFilter("inprogress")}
-          className={`btn ${statusFilter === "inprogress" ? "btn-info" : "btn-outline"}`}
-        >
-          In Progress
-        </button>
-        <button
-          onClick={() => setStatusFilter("done")}
-          className={`btn ${statusFilter === "done" ? "btn-success" : "btn-outline"}`}
-        >
-          Done
-        </button>
-        <button
-          onClick={() => setStatusFilter("canceled")}
-          className={`btn ${statusFilter === "canceled" ? "btn-error" : "btn-outline"}`}
-        >
-          Canceled
-        </button>
+        {["all", "pending", "inprogress", "done", "canceled"].map((status) => (
+          <button
+            key={status}
+            onClick={() => setStatusFilter(status)}
+            className={`btn ${
+              statusFilter === status
+                ? status === "pending"
+                  ? "btn-warning"
+                  : status === "inprogress"
+                  ? "btn-info"
+                  : status === "done"
+                  ? "btn-success"
+                  : status === "canceled"
+                  ? "btn-error"
+                  : "btn-primary"
+                : "btn-outline"
+            }`}
+          >
+            {status === "all" ? "All" : status.charAt(0).toUpperCase() + status.slice(1)}
+          </button>
+        ))}
       </div>
 
       {/* Results Count */}
-      <p className="mb-4 text-lg">
+      <p className="mb-4 text-lg font-medium">
         Showing {filteredRequests.length} request{filteredRequests.length !== 1 ? "s" : ""}
       </p>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto bg-base-100 shadow-xl rounded-xl">
         <table className="table table-zebra w-full">
           <thead>
-            <tr className="bg-base-200">
+            <tr className="bg-base-200 text-lg">
               <th>Recipient Name</th>
               <th>Location</th>
               <th>Blood Group</th>
@@ -131,29 +138,25 @@ const MyDonationRequests = () => {
           <tbody>
             {currentItems.length === 0 ? (
               <tr>
-                <td colSpan="7" className="text-center py-10 text-gray-500">
-                  No donation requests found.
+                <td colSpan="7" className="text-center py-16 text-gray-500 text-xl">
+                  No donation requests found for this filter.
                 </td>
               </tr>
             ) : (
               currentItems.map((request) => (
-                <tr key={request._id}>
+                <tr key={request._id} className="hover">
                   <td className="font-medium">{request.recipientName}</td>
+                  <td>{request.upazila}, {request.district}</td>
                   <td>
-                    {request.upazila}, {request.district}
-                  </td>
-                  <td>
-                    <span className="badge badge-lg badge-error text-white">
+                    <span className="badge badge-lg badge-error text-white font-bold">
                       {request.bloodGroup}
                     </span>
                   </td>
-                  <td>
-                    {new Date(request.donationDate).toLocaleDateString()}
-                  </td>
+                  <td>{new Date(request.donationDate).toLocaleDateString()}</td>
                   <td>{request.donationTime}</td>
                   <td>
                     <span
-                      className={`badge badge-lg ${
+                      className={`badge badge-lg font-bold ${
                         request.status === "pending"
                           ? "badge-warning"
                           : request.status === "inprogress"
@@ -167,9 +170,29 @@ const MyDonationRequests = () => {
                     </span>
                   </td>
                   <td>
-                    <Link to={`/donation-request/${request._id}`}>
-                      <button className="btn btn-sm btn-primary">View</button>
-                    </Link>
+                    <div className="flex flex-wrap gap-2">
+                      {/* View Button */}
+                      <Link to={`/donation-request/${request._id}`}>
+                        <button className="btn btn-sm btn-primary">View</button>
+                      </Link>
+
+                      {/* Edit Button - only for pending */}
+                      {request.status === "pending" && (
+                        <Link to={`/dashboard/edit-request/${request._id}`}>
+                          <button className="btn btn-sm btn-warning">Edit</button>
+                        </Link>
+                      )}
+
+                      {/* Delete Button - only for pending */}
+                      {request.status === "pending" && (
+                        <button
+                          onClick={() => handleDelete(request._id)}
+                          className="btn btn-sm btn-error"
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))
@@ -180,7 +203,7 @@ const MyDonationRequests = () => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center mt-10">
           <div className="join">
             <button
               className="join-item btn"
@@ -189,7 +212,6 @@ const MyDonationRequests = () => {
             >
               «
             </button>
-
             {[...Array(totalPages)].map((_, i) => (
               <button
                 key={i + 1}
@@ -199,7 +221,6 @@ const MyDonationRequests = () => {
                 {i + 1}
               </button>
             ))}
-
             <button
               className="join-item btn"
               onClick={() => handlePageChange(currentPage + 1)}

@@ -78,7 +78,7 @@ const CreateDonationRequest = () => {
         status: "pending", // Default status
       };
 
-      await axios.post("http://localhost:3000/donation-requests", payload);
+      await axios.post("http://localhost:3000/donation-request", payload);
       alert("Donation request created successfully!");
       reset();
       navigate("/dashboard");

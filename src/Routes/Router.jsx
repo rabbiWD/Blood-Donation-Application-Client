@@ -1,82 +1,90 @@
-import { createBrowserRouter } from "react-router";
-import MainLayout from './../Layouts/MainLayout';
+// import { createBrowserRouter } from "react-router-dom";
+import MainLayout from "./../Layouts/MainLayout";
 import Home from "../Components/Home/Home";
 import Register from "../Components/Auth/Register/Register";
 import Login from "../Components/Auth/Login/Login";
 import DashboardLayout from "../DashboardLayout/DashboardLayout";
-import MainDashboard from "../Pages/Dashboard/MainDashboard";
-import AddRequest from "../Pages/Dashboard/AddRequest/AddRequest";
+import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
+import CreateDonationRequest from "../Pages/DashboardPages/CreateDonationRequest";
+import MyDonationRequests from "../Pages/DashboardPages/MyDonationRequest";
+import EditDonationRequest from "../Pages/DashboardPages/EditDonationRequest";
+import Profile from "../Pages/DashboardPages/Profile";
 import SearchDonor from "../Components/Home/SearchDonors";
 import DonationRequest from "../Pages/DashboardPages/DonationRequest";
 import DonationRequestDetails from "../Pages/DashboardPages/DonationRequestDetails";
-import MyDonationRequests from "../Pages/DashboardPages/MyDonationRequest";
-import DashboardHome from "../Pages/Dashboard/DashboardHome/DashboardHome";
-import CreateDonationRequest from "../Pages/DashboardPages/CreateDonationRequest";
-import Profile from "../Pages/DashboardPages/Profile";
-
-
-
+import AddRequest from "../Pages/Dashboard/AllBloodDonationRequest/AllBloodDonationRequest";
+import MainDashboard from "../Pages/Dashboard/MainDashboard";
+import { createBrowserRouter } from "react-router";
+import AllBloodDonationRequest from "../Pages/Dashboard/AllBloodDonationRequest/AllBloodDonationRequest";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout/>,
+    element: <MainLayout />,
     children: [
       {
         index: true,
-        element: <Home/>
+        element: <Home />
       },
       {
-        path: '/search',
-        element: <SearchDonor/>
+        path: "search",
+        element: <SearchDonor />
       },
       {
-        path: '/donation-request',
-        element: <DonationRequest/>
+        path: "donation-request",
+        element: <DonationRequest />
       },
       {
-        path:'/donation-request/:id',
-        element: <DonationRequestDetails/>
+        path: "donation-request/:id",
+        element: <DonationRequestDetails />
       },
-      { path: '/register', 
-        element:<Register/>
+      {
+        path: "register",
+        element: <Register />
       },
-      { path: '/login',
-        element:<Login/>
+      {
+        path: "login",
+        element: <Login />
       },
     ]
   },
   {
-    path:'dashboard',
-    element: <DashboardLayout/>,
+    path: "/dashboard",
+    element: <DashboardLayout />,
     children: [
       {
-        path:'main',
-        element: <MainDashboard/>
+        index: true, // /dashboard গেলে DashboardHome দেখাবে
+        element: <DashboardHome />
       },
       {
-        path: 'add-request',
-        element: <AddRequest/>
+        path: "main", // /dashboard/main
+        element: <MainDashboard />
       },
       {
-        path: '/dashboard',
-        element: <DashboardHome/>
+        path: "all-blood-donation-request", // /dashboard/add-request
+        element: <AllBloodDonationRequest />
       },
       {
-        path: '/dashboard/createRequest',
-        element: <CreateDonationRequest/>
+        path: "createRequest", // /dashboard/createRequest
+        element: <CreateDonationRequest />
       },
       {
-        path: '/dashboard/profile',
-        element: <Profile/>
+        path: "my-donation-request", // <-- ঠিক করা হয়েছে (plural + সঠিক পাথ)
+        element: <MyDonationRequests />
       },
       {
-        path: 'my-donation-request',
-        element: <MyDonationRequests/>
-      }
-      
+        path: "edit-request/:id", // /dashboard/edit-request/:id
+        element: <EditDonationRequest />
+      },
+      {
+        path: "profile", // /dashboard/profile
+        element: <Profile />
+      },
     ]
-
+  },
+  // 404 page (অপশনাল কিন্তু ভালো প্র্যাকটিস)
+  {
+    path: "*",
+    element: <div className="text-center py-20 text-4xl">404 - Page Not Found</div>
   }
-  
 ]);
