@@ -16,6 +16,7 @@ import AddRequest from "../Pages/Dashboard/AllBloodDonationRequest/AllBloodDonat
 import MainDashboard from "../Pages/Dashboard/MainDashboard";
 import { createBrowserRouter } from "react-router";
 import AllBloodDonationRequest from "../Pages/Dashboard/AllBloodDonationRequest/AllBloodDonationRequest";
+import AllUsers from "../Pages/Dashboard/AllUsers/AllUsers";
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ export const router = createBrowserRouter([
       {
         path: "my-donation-request", // <-- ঠিক করা হয়েছে (plural + সঠিক পাথ)
         element: <MyDonationRequests />
+      },
+      {
+        path: '/dashboard/all-users',
+        element: <AllUsers/>
       },
       {
         path: "edit-request/:id", // /dashboard/edit-request/:id
