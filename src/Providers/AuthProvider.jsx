@@ -45,52 +45,54 @@ const AuthProvider = ({ children }) => {
   const updateUserProfile = (user) => {
     console.log(user)
     return updateProfile(auth.currentUser, {
-      displayName: user.displayName,
+      displayName: user.name,
       photoURL: user.photoURL,
     })
   }
 
   // onAuthStateChange
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async currentUser => {
-      console.log('CurrentUser-->', currentUser?.email)
-      setUser(currentUser)
-      setLoading(false)
-    })
-    return () => {
-      return unsubscribe()
-    }
-  }, [])
-
   // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, async currentUser=> {
+  //   const unsubscribe = onAuthStateChanged(auth, async currentUser => {
   //     console.log('CurrentUser-->', currentUser?.email)
-  //     setUser(currentUser);
+  //     setUser(currentUser)
+  //     setLoading(false)
+  //   })
+  //   return () => {
+  //     return unsubscribe()
+  //   }
+  // }, [])
 
-  //     if (currentUser) {
+   const fetchUserRole = async (email) => {
+  try {
+    const res = await axios.get(`http://localhost:3000/user/role/${email}`);
+    setRole(res.data.role);
+    // setStatus(res.data.status);
+    setLoading(false);
+  } catch (err) {
+    console.log("Role fetch error:", err);
+    setLoading(false);
+  }
+};
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async currentUser=> {
+      console.log('CurrentUser-->', currentUser?.email)
+      setUser(currentUser);
+
+      if (currentUser) {
      
-  //       fetchUserRole(currentUser.email);
-  //     } else {
+        fetchUserRole(currentUser.email);
+      } else {
         
-  //       setRole("donor");
-  //       setLoading(false);
-  //     }
-  //   });
+        setRole("donor");
+        setLoading(false);
+      }
+    });
 
-  //   return () => unsubscribe();
-  // }, []);
+    return () => unsubscribe();
+  }, []);
 
-//  const fetchUserRole = async (email) => {
-//   try {
-//     const res = await axios.get(`http://localhost:3000/user/${email}`);
-//     setRole(res.data.role);
-//     // setStatus(res.data.status);
-//     setLoading(false);
-//   } catch (err) {
-//     console.log("Role fetch error:", err);
-//     setLoading(false);
-//   }
-// };
+
 
   // Role set
   // useEffect(()=>{

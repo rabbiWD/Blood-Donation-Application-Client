@@ -261,11 +261,9 @@
 import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-// import { AuthContext } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import useAuth from "../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router";
-import { AuthContext } from "../../../Providers/AuthContext";
 
 const Register = () => {
   const { registerUser, updateUserProfile } = useAuth();
@@ -330,7 +328,7 @@ const Register = () => {
       const photoURL = imgRes.data.data.display_url;
 
       await registerUser(email, password);
-      await updateUserProfile(name, photoURL);
+      await updateUserProfile({name, photoURL});
 
       const userInfo = {
         name,
@@ -355,7 +353,7 @@ const Register = () => {
   return (
     <>
       <Helmet>
-        <title>BloodCare | Register as Donor</title>
+        <title>BloodDonation | Register as Donor</title>
         <meta
           name="description"
           content="Join BloodCare as a blood donor. Register with your details and help save lives in your community."

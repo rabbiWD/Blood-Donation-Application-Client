@@ -150,6 +150,7 @@ import useAuth from "../../../hooks/useAuth";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
+  console.log(user)
 
   const commonLinks = (
     <>
@@ -256,11 +257,10 @@ const Navbar = () => {
           <ul className="menu menu-horizontal space-x-2">{commonLinks}</ul>
 
          {user &&(
-           <li>
-              <NavLink to="/funding" className="font-medium">
+              <NavLink to="/funding" className="px-4 py-2 rounded-lg hover:bg-red-100 transition-all font-medium">
                       Funding
               </NavLink>
-            </li>
+            
          )}
         </div>
        

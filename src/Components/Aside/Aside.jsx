@@ -11,6 +11,8 @@ const Aside = () => {
   const { user, role, logOut } = useAuth(AuthContext);
   const location = useLocation();
 
+  console.log(role)
+
   const [theme, setTheme] = useState("light");
 
   useEffect(() => {
@@ -37,7 +39,7 @@ const Aside = () => {
   const menuItems = {
     donor: [
       { name: "Dashboard Home", path: "/dashboard", icon: "🏠" },
-      { name: "My Donation Requests", path: "my-donation-requests", icon: "🩸" },
+      { name: "My Donation Request", path: "my-donation-request", icon: "🩸" },
       { name: "Create Donation Request", path: "/dashboard/createRequest", icon: "🆕" },
       { name: "Profile", path: "/dashboard/profile", icon: "👤" },
     ],
@@ -84,7 +86,7 @@ const Aside = () => {
               onClick={() => setIsOpen(false)}
               className="block text-center"
             >
-              <h2 className="text-3xl font-bold">🩸 BloodDonation</h2>
+              <h2 className="text-3xl font-bold"> BloodDonation</h2>
               <p className="text-sm text-red-200 mt-2">Dashboard</p>
             </Link>
           </div>
