@@ -19,6 +19,7 @@ import AllBloodDonationRequest from "../Pages/Dashboard/AllBloodDonationRequest/
 import AllUsers from "../Pages/Dashboard/AllUsers/AllUsers";
 import Funding from "../Pages/Fundings/Fundings";
 import RequestDetails from "../Pages/DashboardPages/RequestDetails";
+import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
   {
@@ -39,11 +40,19 @@ export const router = createBrowserRouter([
       },
       {
         path: 'funding',
-        element:<Funding/>
+        element:(
+          <PrivateRoute>
+            <Funding/>
+          </PrivateRoute>
+        )
       },
       {
         path: "donation-request/:id",
-        element: <DonationRequestDetails />
+        element: (
+          <PrivateRoute>
+            <DonationRequestDetails />
+          </PrivateRoute>
+        )
       },
       {
         path: "register",
@@ -60,23 +69,23 @@ export const router = createBrowserRouter([
     element: <DashboardLayout />,
     children: [
       {
-        index: true, // /dashboard গেলে DashboardHome দেখাবে
+        index: true, 
         element: <DashboardHome />
       },
       {
-        path: "main", // /dashboard/main
+        path: "main", 
         element: <MainDashboard />
       },
       {
-        path: "all-blood-donation-request", // /dashboard/add-request
+        path: "all-blood-donation-request", 
         element: <AllBloodDonationRequest />
       },
       {
-        path: "createRequest", // /dashboard/createRequest
+        path: "createRequest", 
         element: <CreateDonationRequest />
       },
       {
-        path: "my-donation-request", // <-- ঠিক করা হয়েছে (plural + সঠিক পাথ)
+        path: "my-donation-request",
         element: <MyDonationRequests />
       },
       {
@@ -84,7 +93,7 @@ export const router = createBrowserRouter([
         element: <AllUsers/>
       },
       {
-        path: "edit-request/:id", // /dashboard/edit-request/:id
+        path: "edit-request/:id", 
         element: <EditDonationRequest />
       },
       {
@@ -92,7 +101,7 @@ export const router = createBrowserRouter([
         element: <RequestDetails/>
       },
       {
-        path: "profile", // /dashboard/profile
+        path: "profile", 
         element: <Profile />
       },
     ]

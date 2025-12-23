@@ -103,7 +103,7 @@ const Login = () => {
                   <span>Signing in...</span>
                 </div>
               ) : (
-                "Sign In"
+                "Log In"
               )}
             </button>
           </form>
@@ -116,7 +116,7 @@ const Login = () => {
               state={from}
               className="font-bold text-red-600 hover:text-red-700 hover:underline transition-all"
             >
-              Sign Up
+              Register
             </Link>
           </p>
         </div>
