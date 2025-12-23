@@ -80,7 +80,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "all-blood-donation-request", 
-        element: <AllBloodDonationRequest />
+        element: (
+          <PrivateRoute>
+            <AllBloodDonationRequest />
+          </PrivateRoute>
+        )
       },
       {
         path: "createRequest", 
@@ -88,19 +92,35 @@ export const router = createBrowserRouter([
       },
       {
         path: "my-donation-request",
-        element: <MyDonationRequests />
+        element: (
+          <PrivateRoute>
+            <MyDonationRequests />
+          </PrivateRoute>
+        )
       },
       {
         path: '/dashboard/all-users',
-        element: <AllUsers/>
+        element: (
+          <PrivateRoute>
+            <AllUsers/>
+          </PrivateRoute>
+        )
       },
       {
         path: "edit-request/:id", 
-        element: <EditDonationRequest />
+        element: (
+          <PrivateRoute>
+            <EditDonationRequest />
+          </PrivateRoute>
+        )
       },
       {
         path: "/dashboard/request-details/:id",
-        element: <RequestDetails/>
+        element: (
+          <PrivateRoute>
+            <RequestDetails/>
+          </PrivateRoute>
+        )
       },
       {
         path: "profile", 

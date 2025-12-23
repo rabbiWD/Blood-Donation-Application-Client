@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
+import useAxiosSecure from "../../../hooks/UseAxiosSecure";
+// import axiosSecure from "../../../hooks/UseAxiosSecure";
+import axiosSecure from './../../../hooks/UseAxiosSecure';
 
 const AllUsers = () => {
   const { user: currentUser } = useAuth();
@@ -9,6 +12,7 @@ const AllUsers = () => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const axiosSecure = useAxiosSecure()
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,7 +24,7 @@ const AllUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(
+      const res = await axiosSecure.get(
         "https://blood-donation-application-server-phi.vercel.app/all-users"
       );
       const allUsers = Array.isArray(res.data) ? res.data : [];

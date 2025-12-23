@@ -4,6 +4,7 @@ import toast from "react-hot-toast"; // ← যোগ করা হয়েছ�
 // import { useNavigate, useParams } from "react-router-dom"; // fixed import
 import useAuth from "../../hooks/useAuth";
 import { useNavigate, useParams } from "react-router";
+import useAxiosSecure from "../../hooks/UseAxiosSecure";
 
 const DonationRequestDetails = () => {
   const { id } = useParams();
@@ -14,6 +15,7 @@ const DonationRequestDetails = () => {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const axiosSecure = useAxiosSecure()
 
   // Redirect to login if not logged in
   useEffect(() => {
@@ -27,7 +29,7 @@ const DonationRequestDetails = () => {
     if (user) {
       const fetchRequest = async () => {
         try {
-          const res = await axios.get(
+          const res = await axiosSecure.get(
             `https://blood-donation-application-server-phi.vercel.app/donation-request/${id}`
           );
           setRequest(res.data);
@@ -48,7 +50,7 @@ const DonationRequestDetails = () => {
 
     setSubmitting(true);
     try {
-      await axios.patch(
+      await axiosSecure.patch(
         `https://blood-donation-application-server-phi.vercel.app/donation-request/${id}/donate`,
         {
           donorName: user.displayName || "Anonymous",

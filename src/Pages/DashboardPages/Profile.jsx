@@ -3,6 +3,7 @@ import axios from "axios";
 // import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router";
+import useAxiosSecure from "../../hooks/UseAxiosSecure";
 
 const Profile = () => {
   const { user: authUser, loading: authLoading } = useAuth();
@@ -17,6 +18,7 @@ const Profile = () => {
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
   const [filteredUpazilas, setFilteredUpazilas] = useState([]);
+  const axiosSecure = useAxiosSecure()
 
   // Load districts & upazilas
   useEffect(() => {
@@ -33,7 +35,7 @@ const Profile = () => {
     if (authUser?.email) {
       const fetchProfile = async () => {
         try {
-          const res = await axios.get(
+          const res = await axiosSecure.get(
             `https://blood-donation-application-server-phi.vercel.app/users/${authUser.email}`
           );
           setProfile(res.data);
@@ -100,7 +102,7 @@ const Profile = () => {
         upazila: formData.upazila,
       };
 
-      await axios.patch(
+      await axiosSecure.patch(
         `https://blood-donation-application-server-phi.vercel.app/users/${authUser.email}`,
         dataToUpdate
       );

@@ -10,8 +10,10 @@ import {
 import axios from "axios";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
+import useAxiosSecure from "../../hooks/UseAxiosSecure";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+
 
 const Funding = () => {
   const { user, loading: authLoading } = useAuth();
@@ -50,6 +52,7 @@ const Funding = () => {
       setPageLoading(false);
     }
   };
+ 
 
   const handlePayment = async (e) => {
     e.preventDefault();
