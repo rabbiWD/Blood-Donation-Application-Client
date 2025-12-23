@@ -12,7 +12,6 @@ import Profile from "../Pages/DashboardPages/Profile";
 import SearchDonor from "../Components/Home/SearchDonors";
 import DonationRequest from "../Pages/DashboardPages/DonationRequest";
 import DonationRequestDetails from "../Pages/DashboardPages/DonationRequestDetails";
-import AddRequest from "../Pages/Dashboard/AllBloodDonationRequest/AllBloodDonationRequest";
 import MainDashboard from "../Pages/Dashboard/MainDashboard";
 import { createBrowserRouter } from "react-router";
 import AllBloodDonationRequest from "../Pages/Dashboard/AllBloodDonationRequest/AllBloodDonationRequest";
@@ -20,11 +19,14 @@ import AllUsers from "../Pages/Dashboard/AllUsers/AllUsers";
 import Funding from "../Pages/Fundings/Fundings";
 import RequestDetails from "../Pages/DashboardPages/RequestDetails";
 import PrivateRoute from "./PrivateRoute";
+import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <ErrorPage/>,
+    hydrateFallbackElement: <p className="flex justify-center items-center h-screen"><span className="loading loading-spinner loading-xl"></span></p>,
     children: [
       {
         index: true,
@@ -106,9 +108,5 @@ export const router = createBrowserRouter([
       },
     ]
   },
-  // 404 page (অপশনাল কিন্তু ভালো প্র্যাকটিস)
-  {
-    path: "*",
-    element: <div className="text-center py-20 text-4xl">404 - Page Not Found</div>
-  }
+ 
 ]);
